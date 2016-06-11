@@ -1,0 +1,131 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "AccountNamesPrefix": {
+      "type": "string",
+      "defaultValue": "sa",
+      "minLength": 1,
+      "maxLength": 2,
+      "metadata": {
+        "description": "This is the prefix used for all unique service names"
+      }
+    },
+    "Location": {
+      "type": "string",
+      "defaultValue": "East US",
+      "allowedValues": [
+        "East US",
+        "West US",
+        "West Europe",
+        "North Europe",
+        "South Central US",
+        "East Asia",
+        "South East Asia"
+      ],
+      "metadata": {
+        "description": "This is the location where all resources will be deployed"
+      }
+    }
+  },
+  "variables": {
+    "StorageType": "Standard_GRS",
+    "AppServicePlanType": "Basic",
+    "StorageName": "[concat(parameters('AccountNamesPrefix'), 'ts', uniqueString(resourceGroup().id))]",
+    "DocumentDBName": "[concat(parameters('AccountNamesPrefix'), 'db', uniqueString(resourceGroup().id))]",
+    "StreamingAnalyticsName": "[concat(parameters('AccountNamesPrefix'), 'sa')]",
+    "ServiceBusNamespaceName": "[concat(parameters('AccountNamesPrefix'), 'sb', uniqueString(resourceGroup().id))]",
+    "SearchName": "[concat(parameters('AccountNamesPrefix'), uniqueString(resourceGroup().id))]",
+    "AppServicePlanName": "[concat(parameters('AccountNamesPrefix'), 'pl')]",
+    "WebAppName": "[concat(parameters('AccountNamesPrefix'), 'wa', uniqueString(resourceGroup().id))]"
+  },
+  "resources": [
+    {
+      "name": "[variables('DocumentDBName')]",
+      "location": "[parameters('Location')]",
+      "apiVersion": "2015-04-08",
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "properties": {
+        "databaseAccountOfferType": "Standard",
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "Session",
+          "maxIntervalInSeconds": 5,
+          "maxStalenessPrefix": 100
+        }
+      }
+    },
+    {
+      "name": "[variables('StreamingAnalyticsName')]",
+      "type": "Microsoft.StreamAnalytics/streamingjobs",
+      "location": "[parameters('Location')]",
+      "apiVersion": "2015-09-01",
+      "properties": {
+        "sku": {
+          "name": "Standard"
+        }
+      }
+    },
+    {
+      "name": "[variables('StorageName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[parameters('Location')]",
+      "apiVersion": "2015-05-01-preview",
+      "dependsOn": [ ],
+      "properties": {
+        "accountType": "[variables('StorageType')]"
+      }
+    },
+    {
+      "name": "[variables('ServiceBusNamespaceName')]",
+      "location": "[parameters('Location')]",
+      "apiVersion": "2014-09-01",
+      "type": "Microsoft.ServiceBus/namespaces",
+      "properties": {
+        "eventHubEnabled": true,
+        "namespaceType": "Messaging",
+        "messagingSku": 2
+      }
+    },
+    {
+      "name": "[variables('SearchName')]",
+      "type": "Microsoft.Search/searchServices",
+      "location": "[parameters('Location')]",
+      "apiVersion": "2015-02-28",
+      "properties": {
+        "sku": {
+          "name": "standard"
+        }
+      }
+    },
+    {
+      "name": "[variables('AppServicePlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[parameters('Location')]",
+      "apiVersion": "2014-06-01",
+      "properties": {
+        "name": "[variables('AppServicePlanName')]",
+        "sku": "[variables('AppServicePlanType')]",
+        "workerSize": "0",
+        "numberOfWorkers": 1
+      }
+    },
+    {
+      "name": "[variables('WebAppName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[parameters('Location')]",
+      "apiVersion": "2014-06-01",
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', variables('AppServicePlanName'))]"
+      ],
+      "tags": {
+        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', variables('AppServicePlanName'))]": "Resource"
+      },
+      "properties": {
+        "name": "[variables('WebAppName')]",
+        "serverFarm": "[variables('AppServicePlanName')]"
+      }
+    }
+  ],
+  "outputs": {
+  }
+}
