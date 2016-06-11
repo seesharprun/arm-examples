@@ -18,6 +18,7 @@
     },
     "repoURL": {
       "type": "string",
+      "defaultValue": "https://github.com/seesharprun/samplewebapp",
       "minLength": 1,
       "metadata": {
         "description": "The URL for the GitHub repository that contains the project to deploy."
