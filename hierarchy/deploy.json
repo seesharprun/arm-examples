@@ -20,8 +20,8 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "storageAccountName": {
-                        "value": "[concat(uniquestring(resourceGroup().id), '-', copyIndex())]"
+                    "storageCount": {
+                        "value": 3
                     }
                 }
             }
