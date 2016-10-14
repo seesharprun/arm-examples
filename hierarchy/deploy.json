@@ -1,7 +1,7 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {    
+    "parameters": {
         "domainName": {
             "type": "string",
             "minLength": 0
@@ -16,7 +16,7 @@
             "properties": {
                 "mode": "incremental",
                 "templateLink": {
-                    "uri": "storageCollection.json",
+                    "uri": "https://raw.githubusercontent.com/seesharprun/arm-examples/master/hierarchy/storageCollection.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -33,7 +33,7 @@
             "properties": {
                 "mode": "incremental",
                 "templateLink": {
-                    "uri": "webSolution.json",
+                    "uri": "https://raw.githubusercontent.com/seesharprun/arm-examples/master/hierarchy/webSolution.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {

@@ -11,16 +11,16 @@
     "resources": [
         {
             "apiVersion": "2015-01-01",
-            "copy": { 
-                "name": "storageCopy", 
-                "count": "[parameters('storageCount')]" 
+            "copy": {
+                "name": "storageCopy",
+                "count": "[parameters('storageCount')]"
             },
             "name": "linkedTemplate",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "incremental",
                 "templateLink": {
-                    "uri": "storage.json",
+                    "uri": "https://raw.githubusercontent.com/seesharprun/arm-examples/master/hierarchy/storage.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
