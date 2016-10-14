@@ -1,0 +1,38 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageCount": {
+            "type": "int",
+            "defaultValue": 0
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "apiVersion": "2015-01-01",
+            "copy": { 
+                "name": "storageCopy", 
+                "count": "[parameters('storageCount')]" 
+            },
+            "name": "linkedTemplate",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "storage.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "storageAccountName": {
+                        "value": "[concat(uniquestring(resourceGroup().id), '-', copyIndex())]"
+                    },
+                    "storageAccountType": {
+                        "value": "Standard_LRS"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

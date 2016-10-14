@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {    
+        "domainName": {
+            "type": "string",
+            "minLength": 0
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "apiVersion": "2015-01-01",
+            "name": "linkedTemplate",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "storageCollection.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "storageAccountName": {
+                        "value": "[concat(uniquestring(resourceGroup().id), '-', copyIndex())]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2015-01-01",
+            "name": "linkedTemplate",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "webSolution.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "webAppName": {
+                        "value": "[parameters('domainName')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}
