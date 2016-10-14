@@ -25,7 +25,7 @@
                 },
                 "parameters": {
                     "storageAccountName": {
-                        "value": "[concat(uniquestring(resourceGroup().id), '-', copyIndex())]"
+                        "value": "[concat(uniquestring(resourceGroup().id), copyIndex())]"
                     },
                     "storageAccountType": {
                         "value": "Standard_LRS"
