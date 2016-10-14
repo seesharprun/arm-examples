@@ -15,7 +15,7 @@
                 "name": "storageCopy",
                 "count": "[parameters('storageCount')]"
             },
-            "name": "linkedTemplate",
+            "name": "linkedStorageTemplate",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "incremental",
